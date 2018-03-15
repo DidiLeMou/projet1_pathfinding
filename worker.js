@@ -235,7 +235,7 @@ function getVoisins(posActuelle, grille) {
     var voisinsOks = [];
 
     //bas
-    if (grille[posActuelle[0] + 1][posActuelle[1]] === undefined) {
+    if (posActuelle[0] + 1 > H) {
         voisinsOks.push(false);
     } else {
         if (grille[posActuelle[0] + 1][posActuelle[1]] !== undefined && grille[posActuelle[0] + 1][posActuelle[1]] !== 'm') {
@@ -247,7 +247,7 @@ function getVoisins(posActuelle, grille) {
     }
 
     //haut
-    if (grille[posActuelle[0] - 1][posActuelle[1]] === undefined) {
+    if (posActuelle[0] - 1 < H) {
         voisinsOks.push(false);
     } else {
 
@@ -261,7 +261,7 @@ function getVoisins(posActuelle, grille) {
     }
 
     //droite
-    if (grille[posActuelle[0]][posActuelle[1] + 1] === undefined) {
+    if (posActuelle[1] + 1 > L) {
         voisinsOks.push(false);
     } else {
         if (grille[posActuelle[0]][posActuelle[1] + 1] !== undefined && grille[posActuelle[0]][posActuelle[1] + 1] !== 'm') {
@@ -271,10 +271,10 @@ function getVoisins(posActuelle, grille) {
         if (grille[posActuelle[0]][posActuelle[1] + 1] === undefined || grille[posActuelle[0]][posActuelle[1] + 1] === 'm') {
             voisinsOks.push(false); // on peut pas aller a droite
         }
-    }
+    } 
 
     //gauche
-    if (grille[posActuelle[0]][posActuelle[1] + 1] === undefined) {
+    if (posActuelle[1] + 1 < L) {
         voisinsOks.push(false);
     } else {
         if (grille[posActuelle[0]][posActuelle[1] + 1] !== undefined && grille[posActuelle[0]][posActuelle[1] - 1] !== 'm') {
@@ -285,6 +285,7 @@ function getVoisins(posActuelle, grille) {
             voisinsOks.push(false); // on peut pas aller a gauche
         }
     }
+
 
     return voisinsOks;
 }
