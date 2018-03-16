@@ -226,6 +226,8 @@ function trouverPositionFinaleY(grille) {
     return null;
 }
 
+// TODO changer les true/false pour les coordonnees des endroits ou on peut aller
+
 /**
  * Retourne un array bool des voisins si libre (bas, haut, droite, gauche)
  * @param {Array} posActuelle vecteur y,x de la position actuelle
@@ -233,59 +235,52 @@ function trouverPositionFinaleY(grille) {
  */
 function getVoisins(posActuelle, grille) {
     var voisinsOks = [];
+    var coorVoisin = [];
+    for (var i = 0; i < length; i++) {
 
-    //bas
-    if (posActuelle[0] + 1 > H) {
-        voisinsOks.push(false);
-    } else {
-        if (grille[posActuelle[0] + 1][posActuelle[1]] !== undefined && grille[posActuelle[0] + 1][posActuelle[1]] !== 'm') {
-            voisinsOks.push(true); // on peut aller en bas
+    }
+    //bas /* si on est dans un coin, inutile de trouver des voisins < gauche/droite, haut/bas.  Regarder les coins
+    //opposés au coin(ex: coin gauche haut: on peut seulement aller a droite ou en bas).
+
+    if (!(posActuelle[0] > H)) {
+
+        if (typeof (grille[posActuelle[0] + 1]) !== "undefined" && grille[posActuelle[0] + 1][posActuelle[1]] !== 'm') {
+            var coors = [posActuelle[0] + 1, posActuelle[1]];
+            voisinsOks.push(coors);
+
         }
-        if (grille[posActuelle[0] + 1][posActuelle[1]] === undefined || grille[posActuelle[0] + 1][posActuelle[1]] === 'm') {
-            voisinsOks.push(false); // on peut pas aller en bas
-        }
+
     }
 
     //haut
-    if (posActuelle[0] - 1 < H) {
-        voisinsOks.push(false);
-    } else {
+    if (!(posActuelle[0] < 0)) {
 
-        if (grille[posActuelle[0] - 1][posActuelle[1]] !== undefined && grille[posActuelle[0] - 1][posActuelle[1]] !== 'm') {
-            voisinsOks.push(true); // on peut aller en haut
+        if (typeof (grille[posActuelle[0] - 1]) !== "undefined" && grille[posActuelle[0]-1][posActuelle[1]] !== 'm') {
+            var coors = [posActuelle[0] - 1, posActuelle[1]];
+            voisinsOks.push(coors);
         }
 
-        if (grille[posActuelle[0] - 1][posActuelle[1]] === undefined || grille[posActuelle[0] - 1][posActuelle[1]] === 'm') {
-            voisinsOks.push(false); // on peut pas aller en haut
-        }
     }
 
     //droite
-    if (posActuelle[1] + 1 > L) {
-        voisinsOks.push(false);
-    } else {
-        if (grille[posActuelle[0]][posActuelle[1] + 1] !== undefined && grille[posActuelle[0]][posActuelle[1] + 1] !== 'm') {
-            voisinsOks.push(true); // on peut aller a droite
+    if (!(posActuelle[1] > L)) {
+
+        if (typeof (grille[(posActuelle[1] + 1)]) !== "undefined" && grille[posActuelle[0]][posActuelle[1] + 1] !== 'm') {
+            var coors = [posActuelle[0], posActuelle[1] + 1];
+            voisinsOks.push(coors);
         }
 
-        if (grille[posActuelle[0]][posActuelle[1] + 1] === undefined || grille[posActuelle[0]][posActuelle[1] + 1] === 'm') {
-            voisinsOks.push(false); // on peut pas aller a droite
-        }
-    } 
-
-    //gauche
-    if (posActuelle[1] + 1 < L) {
-        voisinsOks.push(false);
-    } else {
-        if (grille[posActuelle[0]][posActuelle[1] + 1] !== undefined && grille[posActuelle[0]][posActuelle[1] - 1] !== 'm') {
-            voisinsOks.push(true); // on peut aller a gauche
-        }
-
-        if (grille[posActuelle[0]][posActuelle[1] - 1] === undefined || grille[posActuelle[0]][posActuelle[1] - 1] === 'm') {
-            voisinsOks.push(false); // on peut pas aller a gauche
-        }
     }
 
+    //gauche
+    if (!(posActuelle[1] < 0)) {
+
+        if (typeof(grille[(posActuelle[1] - 1)]) !== "undefined" && grille[posActuelle[0]][posActuelle[1] - 1] !== 'm') {
+            var coors = [posActuelle[0], posActuelle[1] - 1];
+            voisinsOks.push(coors);
+        }
+
+    } 
 
     return voisinsOks;
 }
@@ -294,14 +289,13 @@ function manhattanX(xi, xf) {
     return Math.abs(xi - xf);
 }
 
-function getDeltaX(xi, xf) {
-    return xi - xf; // si neg va a droite
-}
-
 function manhattanY(yi, yf) {
     return Math.abs(yi - yf);
 }
 
+function getDeltaX(xi, xf) {
+    return xi - xf; // si neg va a droite
+}
 ////////////////////////////////////////////////////////////////////////////////
 //                             grid setup                                     //
 ////////////////////////////////////////////////////////////////////////////////
@@ -371,17 +365,63 @@ tracerGrilleJeu(grille);
 //                             Algorithm                                      //
 ////////////////////////////////////////////////////////////////////////////////
 
+// nouveau format de coordonnees possibles
+var position = {
+    posx: Number,
+    posy: Number,
+    f: Number,
+    g: Number,
+    h: Number
+}
+
 // TODO il faudra afficher grille a chaque etape de l'alogrithme pour montrer
+
 var posx = trouverPosiInitialeX(grille);
 var posy = trouverPosiInitialeY(grille);
-var posi = [posy, posx];
+var pos = [posy,posx];
 const posfx = trouverPositionFinaleX(grille);
 const posfy = trouverPositionFinaleY(grille);
-const posf = [posfy, posfx];
-
+const posf = [posfy,posfx];
 var openSet = trouverTuileLibre(grille);
 var closedSet = trouverTuilesPrises(grille);
 
-print(getVoisins(posi, grille));
+var debut = pos;
+var fin = posf;
+
+//openSet.push(debut);
+//print(openSet);
+
+var voisinsOkTourTest = getVoisins(pos, grille);
+
+print(voisinsOkTourTest);
+
+//openSet.push(voisinsOkTourTest);
+
+//print(openSet);
+
+/*
+while (openSet.length > 0) {
+
+    var plusPetit = 0; //Sauvegarder le cout le plus bas.
+    for (var i = 0; i < openSet.length; i++) {
+
+        var verifier = openSet.voisinsOks;
+        var verifierX = manhattanX(verifier[1], fin[1]);
+        var verifierY = manhattanY(verifier[0], fin[0]);
+        var coorVoisin = [verifierX, verifierY];
+
+
+        if (openSet[i].voisin < openSet[coorVoisin].voisin) {
+            plusPetit = i;
+        }
+        print(plusPetit);
+
+    }
+}
+*/
+
+
+
+//print(getVoisins(posi, grille));
 
 //rappel [y][x]

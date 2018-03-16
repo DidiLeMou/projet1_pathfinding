@@ -189,7 +189,7 @@ var astar = {
                 grid[x][y].h = 0;
                 //grid[x][y].debug = "";
                 grid[x][y].parent = null;
-                //grid[x][y].precedent = undefined;
+                grid[x][y].precedent = undefined;
                 grid[x][y].mur = false;
 
                 if (grid[x][y] === "m") {
